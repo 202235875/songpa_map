@@ -3,6 +3,7 @@ import maplibregl from "maplibre-gl";
 
 const SONGPA_CENTER = [127.1177, 37.5145];
 const VWORLD_API_KEY = import.meta.env.VITE_VWORLD_API_KEY || "";
+const DATA_BASE_URL = import.meta.env.BASE_URL;
 
 const CATEGORY_COLORS = {
   "02000": "#f3a64f",
@@ -58,6 +59,10 @@ const BASE_STYLE = {
       : []),
   ],
 };
+
+function dataUrl(path) {
+  return `${DATA_BASE_URL}${path}`.replace(/\/{2,}/g, "/");
+}
 
 function formatNumber(value) {
   return new Intl.NumberFormat("ko-KR").format(value || 0);
@@ -149,7 +154,7 @@ function App() {
 
     async function bootstrap() {
       try {
-        const response = await fetch("/data/stats/songpa_building_usage_stats.json");
+        const response = await fetch(dataUrl("data/stats/songpa_building_usage_stats.json"));
         if (!response.ok) {
           throw new Error("?듦퀎 ?곗씠?곕? 遺덈윭?ㅼ? 紐삵뻽?듬땲??");
         }
@@ -203,9 +208,9 @@ function App() {
 
     map.on("load", async () => {
       const [buildingsResponse, parcelsResponse, adminResponse] = await Promise.all([
-        fetch("/data/geojson/songpa_buildings.geojson"),
-        fetch("/data/geojson/songpa_cadastral.geojson"),
-        fetch("/data/geojson/songpa_admin_dongs.geojson"),
+        fetch(dataUrl("data/geojson/songpa_buildings.geojson")),
+        fetch(dataUrl("data/geojson/songpa_cadastral.geojson")),
+        fetch(dataUrl("data/geojson/songpa_admin_dongs.geojson")),
       ]);
 
       const [buildingsData, parcelsData, adminData] = await Promise.all([

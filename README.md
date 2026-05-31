@@ -2,6 +2,10 @@
 
 Songpa-gu GIS viewer built with React, Vite, and MapLibre GL.
 
+## Live Demo
+
+https://202235875.github.io/songpa_map/
+
 ## Setup
 
 ```bash
@@ -16,6 +20,8 @@ VITE_VWORLD_API_KEY=YOUR_VWORLD_API_KEY
 ```
 
 The `.env` file is ignored by Git and should not be committed.
+
+For GitHub Pages deployment, add `VITE_VWORLD_API_KEY` as a repository secret if you want to use the VWorld base map in production.
 
 ## Run
 
