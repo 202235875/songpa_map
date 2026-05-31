@@ -72,6 +72,17 @@ function formatArea(value) {
   return `${formatNumber(Math.round(value || 0))} m2`;
 }
 
+function isCorruptedText(value) {
+  return typeof value === "string" && /[�\u4e00-\u9fff]|[?]{2,}|곗|씠|뙆|援|嫄/.test(value);
+}
+
+function readableText(value, fallback = "이름 없음") {
+  if (!value || isCorruptedText(value)) {
+    return fallback;
+  }
+  return value;
+}
+
 function getGeoJsonBounds(geojson) {
   const bounds = new maplibregl.LngLatBounds();
 
@@ -115,12 +126,12 @@ function DonutChart({ totalCount, categories }) {
     <div className="donut-block">
       <div className="donut" style={{ background: gradient }}>
         <div className="donut-hole">
-          <strong>{focus?.name || "?곗씠???놁쓬"}</strong>
+          <strong>{focus?.name || "데이터 없음"}</strong>
           <span>{focus ? `${(focus.ratio * 100).toFixed(1)}%` : ""}</span>
         </div>
       </div>
       <div className="donut-caption">
-        <span>{formatNumber(totalCount)} 嫄대Ъ</span>
+        <span>{formatNumber(totalCount)} 건물</span>
       </div>
     </div>
   );
@@ -156,7 +167,7 @@ function App() {
       try {
         const response = await fetch(dataUrl("data/stats/songpa_building_usage_stats.json"));
         if (!response.ok) {
-          throw new Error("?듦퀎 ?곗씠?곕? 遺덈윭?ㅼ? 紐삵뻽?듬땲??");
+          throw new Error("통계 데이터를 불러오지 못했습니다.");
         }
         const statsData = await response.json();
         if (!cancelled) {
@@ -307,7 +318,7 @@ function App() {
         const properties = feature.properties || {};
         const usageCode = properties.A8 || "";
         const usageName = usageCodeMapRef.current[usageCode] || usageCode || "-";
-        const buildingName = properties.A24 || properties.A25 || "이름 없음";
+        const buildingName = readableText(properties.A24 || properties.A25);
         const popupHtml = `
           <div class="hover-card">
             <div class="hover-card__title">${buildingName}</div>
@@ -381,9 +392,9 @@ function App() {
       <div ref={mapNodeRef} className="map-canvas" />
 
       <aside className="left-panel panel-glass">
-        <div className="panel-title">?≫뙆援??곗씠??酉곗뼱</div>
+        <div className="panel-title">송파구 데이터 뷰어</div>
         <div className="panel-subtitle">
-          嫄대Ъ {stats ? formatNumber(stats.totalBuildings) : "-"} 쨌 ?꾩?{" "}
+          건물 {stats ? formatNumber(stats.totalBuildings) : "-"} / 필지{" "}
           {stats ? formatNumber(stats.totalParcels) : "-"}
         </div>
 

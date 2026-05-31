@@ -34,7 +34,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_VWORLD_API_KEY: ${{ secrets.VITE_VWORLD_API_KEY }}
+          VITE_VWORLD_API_KEY: ${{ secrets.VITE_VWORLD_API_KEY || secrets.VWORLD_API_KEY || vars.VITE_VWORLD_API_KEY || vars.VWORLD_API_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
